@@ -4,10 +4,10 @@ use std::{
 };
 
 #[cfg(any(feature = "openssl", feature = "rustls"))]
-use nix::sys::socket::setsockopt;
-
-#[cfg(any(feature = "openssl", feature = "rustls"))]
-use nixext::sys::socket::sockopt::{TcpTlsRx, TcpTlsTx, TcpUlp};
+use nix::sys::socket::{
+    setsockopt,
+    sockopt::{TcpTlsRx, TcpTlsTx, TcpUlp},
+};
 
 #[cfg(any(feature = "openssl", feature = "rustls"))]
 use crate::handshake;

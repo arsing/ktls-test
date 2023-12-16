@@ -45,6 +45,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "cfg_aliases"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd16c4719339c4530435d38e511904438d07cce7950afa3718a84ac36c10e89e"
+
+[[package]]
 name = "cpufeatures"
 version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -134,7 +140,6 @@ version = "0.1.0"
 dependencies = [
  "libc",
  "nix",
- "nixext",
  "openssl",
  "opensslext",
  "rustls",
@@ -160,20 +165,13 @@ dependencies = [
 [[package]]
 name = "nix"
 version = "0.27.1"
-source = "git+https://github.com/Arnavion/nix?branch=ktls#df6fb77e4ce129ea448158510876d64c62e278d4"
+source = "git+https://github.com/Arnavion/nix?branch=ktls#7cb43da9ab0ae686bdcb2a54ccb1e68ba3b7f154"
 dependencies = [
  "bitflags",
  "cfg-if",
+ "cfg_aliases",
  "libc",
  "memoffset",
-]
-
-[[package]]
-name = "nixext"
-version = "0.1.0"
-dependencies = [
- "libc",
- "nix",
 ]
 
 [[package]]

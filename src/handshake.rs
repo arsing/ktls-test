@@ -1,8 +1,9 @@
 use std::net::TcpStream;
 
-use nix::poll::{poll, PollFd, PollFlags};
-
-use nixext::sys::socket::sockopt::TlsCryptoInfo;
+use nix::{
+    poll::{poll, PollFd, PollFlags},
+    sys::socket::sockopt::TlsCryptoInfo,
+};
 
 #[cfg(feature = "openssl")]
 pub(crate) fn openssl_prepare(
@@ -108,6 +109,7 @@ pub(crate) fn openssl<'a>(
     use std::os::fd::AsFd as _;
 
     use openssl::ssl::{ErrorCode, HandshakeError};
+    use nix::poll::PollTimeout;
 
     use opensslext::ssl::ExtractedSecrets;
 
@@ -184,7 +186,7 @@ pub(crate) fn openssl<'a>(
                 if !events.is_empty() {
                     let mut poll_fds = [PollFd::new(stream.as_fd(), PollFlags::empty())];
                     poll_fds[0].set_events(events);
-                    _ = poll(&mut poll_fds, -1).unwrap();
+                    _ = poll(&mut poll_fds, PollTimeout::NONE).unwrap();
                 }
 
                 result = mid_handshake_stream.handshake();
@@ -296,6 +298,7 @@ pub(crate) fn rustls(
 ) -> (TlsCryptoInfo, TlsCryptoInfo) {
     use std::{io::ErrorKind, os::fd::AsFd as _};
 
+    use nix::poll::PollTimeout;
     use rustls::ExtractedSecrets;
 
     #[allow(clippy::needless_pass_by_value)] // Clippy wants `extracted_secret` to be a borrow because all its fields are Copy.
@@ -374,7 +377,7 @@ pub(crate) fn rustls(
             let mut poll_fds = [PollFd::new(stream.as_fd(), PollFlags::empty())];
             poll_fds[0].set_events(events);
             let previous_revents = revents;
-            _ = poll(&mut poll_fds, -1).unwrap();
+            _ = poll(&mut poll_fds, PollTimeout::NONE).unwrap();
             revents = previous_revents | poll_fds[0].revents().unwrap_or_else(PollFlags::empty);
         }
 

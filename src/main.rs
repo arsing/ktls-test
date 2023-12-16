@@ -13,7 +13,7 @@ use std::{
     ptr,
 };
 
-use nix::poll::{poll, PollFd, PollFlags};
+use nix::poll::{poll, PollFd, PollFlags, PollTimeout};
 
 mod acceptor;
 mod connector;
@@ -139,7 +139,7 @@ fn client(hostname: &str, tls_allowed: (bool, bool), cipher_suites_allowed: (boo
 
             Err(nix::Error::EAGAIN) => {
                 let mut poll_fds = [PollFd::new(stream.as_fd(), PollFlags::POLLIN)];
-                _ = poll(&mut poll_fds, -1).unwrap();
+                _ = poll(&mut poll_fds, PollTimeout::NONE).unwrap();
             }
 
             Err(err) => panic!("{err}"),
@@ -211,7 +211,7 @@ fn proxy(
             let mut poll_fds = [PollFd::new(downstream.as_fd(), PollFlags::empty())];
             poll_fds[0].set_events(downstream_events);
             let previous_revents = downstream_revents;
-            _ = poll(&mut poll_fds, -1).unwrap();
+            _ = poll(&mut poll_fds, PollTimeout::NONE).unwrap();
             downstream_revents =
                 previous_revents | poll_fds[0].revents().unwrap_or_else(PollFlags::empty);
         }
@@ -219,7 +219,7 @@ fn proxy(
             let mut poll_fds = [PollFd::new(upstream.as_fd(), PollFlags::empty())];
             poll_fds[0].set_events(upstream_events);
             let previous_revents = upstream_revents;
-            _ = poll(&mut poll_fds, -1).unwrap();
+            _ = poll(&mut poll_fds, PollTimeout::NONE).unwrap();
             upstream_revents =
                 previous_revents | poll_fds[0].revents().unwrap_or_else(PollFlags::empty);
         }
