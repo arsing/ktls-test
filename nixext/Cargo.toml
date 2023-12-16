@@ -1,0 +1,13 @@
+[package]
+name = "nixext"
+version = "0.1.0"
+authors = ["Arnav Singh <arsing@microsoft.com>"]
+edition = "2021"
+
+
+[dependencies]
+# For kTLS types
+libc = { version = "0.2.151", default-features = false }
+nix = { version = "0.27", default-features = false, features = [
+	"socket",
+] }

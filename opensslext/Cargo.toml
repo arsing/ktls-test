@@ -1,0 +1,17 @@
+[package]
+name = "opensslext"
+version = "0.1.0"
+authors = ["Arnav Singh <arsing@microsoft.com>"]
+edition = "2021"
+
+
+[dependencies]
+hkdf = { version = "0.12", default-features = false }
+hmac = { version = "0.12", default-features = false, features = [
+	"reset", # for `hmac::Hmac::finalize_reset`
+] }
+# For kTLS types
+libc = { version = "0.2.151", default-features = false }
+# For `Nid::CHACHA20_POLY1305`
+openssl = { version = "0.10.59", default-features = false }
+sha2 = { version = "0.10", default-features = false }

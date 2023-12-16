@@ -1,0 +1,38 @@
+[package]
+name = "ktls-test"
+version = "0.1.0"
+authors = ["Arnav Singh <arsing@microsoft.com>"]
+edition = "2021"
+
+
+[dependencies]
+# For kTLS types
+libc = { version = "0.2.151", default-features = false }
+nix = { version = "0.27", default-features = false, features = [
+	"poll",
+	"socket",
+] }
+openssl = { version = "0.10", optional = true, default-features = false }
+# For `RootCertStore::add_trust_anchors`
+rustls = { version = "0.21.6", optional = true, default-features = false, features = [
+	"secret_extraction",
+	"tls12",
+] }
+rustls-pemfile = { version = "1", optional = true, default-features = false }
+webpki-roots = { version = "0.25", optional = true, default-features = false }
+
+nixext = { path = "./nixext" }
+opensslext = { path = "./opensslext", optional = true }
+
+
+[features]
+openssl = ["dep:openssl", "dep:opensslext"]
+rustls = ["dep:rustls", "dep:rustls-pemfile", "dep:webpki-roots"]
+
+
+[workspace]
+resolver = "2"
+
+
+[patch.crates-io]
+nix = { git = "https://github.com/Arnavion/nix", branch = "ktls" }
