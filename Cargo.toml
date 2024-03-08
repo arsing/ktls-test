@@ -1,0 +1,39 @@
+[package]
+name = "ktls-test"
+version = "0.1.0"
+authors = ["Arnav Singh <arsing@microsoft.com>"]
+edition = "2021"
+
+
+[dependencies]
+# For kTLS types
+libc = { version = "0.2.151", default-features = false }
+nix = { version = "0.28", default-features = false, features = [
+	"poll",
+	"socket",
+] }
+openssl = { version = "0.10", optional = true, default-features = false }
+rustls = { version = "0.23", optional = true, default-features = false, features = [
+	"ring", # for `rustls::crypto::ring::cipher_suite`
+	"std", # for `rustls::Connection`, `rustls::server::ServerConfig::builder_with_protocol_versions`, etc
+	"tls12",
+] }
+rustls-pemfile = { version = "2", optional = true, default-features = false, features = [
+	"std", # for `rustls_pemfile::certs`, `rustls_pemfile::pkcs8_private_keys`
+] }
+webpki-roots = { version = "0.26", optional = true, default-features = false }
+
+opensslext = { path = "./opensslext", optional = true }
+
+
+[features]
+openssl = ["dep:openssl", "dep:opensslext"]
+rustls = ["dep:rustls", "dep:rustls-pemfile", "dep:webpki-roots"]
+
+
+[workspace]
+resolver = "2"
+
+
+[patch.crates-io]
+rustls = { git = "https://github.com/rustls/rustls", rev = "9ef2150472a9b3363bc081870685fe4c26404715" }
